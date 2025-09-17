@@ -1,4 +1,4 @@
-import { Controller, All, Req, Res, HttpStatus } from '@nestjs/common';
+import { Controller, All, Req, Res, HttpStatus, Ip } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ServicesConfig } from 'config/service';
 import { ProxyService } from 'src/common/proxy.service';
@@ -8,7 +8,9 @@ export class PosController {
   constructor(private readonly proxy: ProxyService) {}
 
   @All('*')
-  async forward(@Req() req: Request, @Res() res: Response) {
+  async forward(@Req() req: Request, @Res() res: Response, @Ip() ip: string) {
+    console.log('User IP:', ip);
+
     const path = req.path.replace('/pos', '');
     try {
       const data = await this.proxy.forwardRequest(
